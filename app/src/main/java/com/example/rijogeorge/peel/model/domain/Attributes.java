@@ -10,7 +10,7 @@ public class Attributes {
     @SerializedName("aspect")
     private String mAspect;
     @SerializedName("countries")
-    //private List<String> mCountries;
+    //use hashset instead of list to get constant lookup time
     private HashSet<String> mCountries;
     @SerializedName("language")
     private String mLanguage;
