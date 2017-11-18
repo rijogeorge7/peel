@@ -23,14 +23,6 @@ public class Attributes {
         mAspect = aspect;
     }
 
-//    public List<String> getCountries() {
-//        return mCountries;
-//    }
-//
-//    public void setCountries(List<String> countries) {
-//        mCountries = countries;
-//    }
-
     public String getLanguage() {
         return mLanguage;
     }
