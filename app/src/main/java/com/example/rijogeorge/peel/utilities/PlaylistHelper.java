@@ -1,13 +1,18 @@
 package com.example.rijogeorge.peel.utilities;
 
+import com.example.rijogeorge.peel.model.domain.Attributes;
 import com.example.rijogeorge.peel.model.domain.Content;
 import com.example.rijogeorge.peel.model.domain.PlayList;
 import com.example.rijogeorge.peel.model.domain.Preroll;
 import com.example.rijogeorge.peel.model.domain.Video;
 import com.example.rijogeorge.peel.model.mock.ContentJson;
-import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -15,11 +20,15 @@ import java.util.List;
  */
 
 public class PlaylistHelper {
-    private static Content content;
+    private static Content content = null;
 
     //return a list of legal playlist for content and country name
     public static List<PlayList> getPlayLists(String contentName, String country) {
-        content = new Gson().fromJson(ContentJson.contentJson,Content.class);
+        try {
+            content = getContentFromJson(ContentJson.contentJson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         List<PlayList> playLists=new ArrayList<>();
         List<Content> nameFilteredContents = getNameFilteredContents(contentName);
         for(Content content : nameFilteredContents) {
@@ -35,7 +44,6 @@ public class PlaylistHelper {
             }
         }
         return playLists;
-
     }
 
     //get all the contents for the name for example all the contents of name MI3
@@ -85,4 +93,76 @@ public class PlaylistHelper {
         }
         return prerollsFilteredForName;
     }
+
+        private static Content getContentFromJson(String contentJson) throws JSONException {
+            Content contentObject = new Content();
+            List<Content> contentList=new ArrayList<>();
+            JSONObject reader = new JSONObject(contentJson);
+            JSONArray contentArray = reader.getJSONArray("content");
+            for(int i=0; i< contentArray.length(); i++) {
+                Content contentObj = new Content();
+                JSONObject c = contentArray.getJSONObject(i);
+                contentObj.setName(c.getString("name"));
+                List<Preroll> preroll_list = getPrerollfromJsonArray(c.getJSONArray("preroll"));
+                contentObj.setPreroll(preroll_list);
+                List<Video> video = getVideoFromJsonArray(c.getJSONArray("videos"));
+                contentObj.setVideos(video);
+                contentList.add(contentObj);
+            }
+            contentObject.setContent(contentList);
+            JSONArray prerollArray = reader.getJSONArray("preroll");
+            List<Preroll> preroll_list = getPrerollfromJsonArray(prerollArray);
+            contentObject.setPreroll(preroll_list);
+
+
+            return contentObject;
+        }
+
+
+    private static List<Preroll> getPrerollfromJsonArray(JSONArray prerollArray) throws JSONException {
+        List<Preroll> preroll_list=new ArrayList<>();
+        for(int i=0; i<prerollArray.length();i++) {
+            JSONObject prerollObj = prerollArray.getJSONObject(i);
+            Preroll preroll=new Preroll();
+            preroll.setName(prerollObj.getString("name"));
+
+            List<Video> videos = null;
+            if(prerollObj.has("videos"))
+            videos = getVideoFromJsonArray(prerollObj.getJSONArray("videos"));
+            preroll.setVideos(videos);
+            preroll_list.add(preroll);
+        }
+        return preroll_list;
+    }
+
+    private static List<Video> getVideoFromJsonArray(JSONArray videosArray) throws JSONException {
+        List<Video> videoList = new ArrayList<>();
+        for(int i=0; i<videosArray.length();i++) {
+            JSONObject videoObj = videosArray.getJSONObject(i);
+            Video video = new Video();
+            video.setName(videoObj.getString("name"));
+            Attributes attributes=getAttributesFromJsonObject(videoObj.getJSONObject("attributes"));
+            video.setAttributes(attributes);
+            videoList.add(video);
+        }
+        return videoList;
+    }
+
+    private static Attributes getAttributesFromJsonObject(JSONObject attributesObj) throws JSONException {
+        Attributes attributes = new Attributes();
+        HashSet<String> countries = getCountriesHashSet(attributesObj.getJSONArray("countries"));
+        attributes.setmCountries(countries);
+        attributes.setLanguage(attributesObj.getString("language"));
+        attributes.setAspect(attributesObj.getString("aspect"));
+        return attributes;
+    }
+
+    private static HashSet<String> getCountriesHashSet(JSONArray countriesArray) throws JSONException {
+        HashSet<String> countrySet = new HashSet<>();
+        for(int i=0; i<countriesArray.length(); i++) {
+            countrySet.add(countriesArray.getString(i));
+        }
+        return countrySet;
+    }
+
 }
