@@ -8,26 +8,20 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.rijogeorge.peel.R;
-import com.example.rijogeorge.peel.model.domain.Content;
 import com.example.rijogeorge.peel.model.domain.PlayList;
-import com.example.rijogeorge.peel.model.domain.Preroll;
 import com.example.rijogeorge.peel.model.domain.Video;
-import com.example.rijogeorge.peel.model.mock.ContentJson;
 import com.example.rijogeorge.peel.utilities.PlaylistHelper;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Content content;
-    TextView output;
+    private TextView output;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        content = new Gson().fromJson(ContentJson.contentJson,Content.class);
         attachUI();
     }
 
@@ -54,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         if(playLists.size()>0){
             int playListCount = 1;
             for(PlayList pl : playLists){
-                outputStr.append("Playlist "+playListCount+"\n");
+                outputStr.append("Playlist ").append(playListCount).append("\n");
                 playListCount++;
                 outputStr.append("[ ");
                 for(Video video : pl.getPrerollVideos()) {
@@ -69,7 +63,5 @@ public class MainActivity extends AppCompatActivity {
         }
         output.setText(outputStr.toString());
     }
-
-
 
 }
