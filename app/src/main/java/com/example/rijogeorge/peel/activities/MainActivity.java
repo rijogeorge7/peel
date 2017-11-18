@@ -12,7 +12,6 @@ import com.example.rijogeorge.peel.model.domain.PlayList;
 import com.example.rijogeorge.peel.model.domain.Video;
 import com.example.rijogeorge.peel.utilities.PlaylistHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
         output = (TextView) findViewById(R.id.output);
         Button submitButton = (Button) findViewById(R.id.submitButton);
         //used lambda , need to set source compatibility to java 8
-        submitButton.setOnClickListener( v -> displayPlayLists(contentSpinner.getSelectedItem().toString(),countrySpinner.getSelectedItem().toString()));
+        submitButton.setOnClickListener( v -> displayPlayLists(contentSpinner.getSelectedItem().toString()
+                ,countrySpinner.getSelectedItem().toString()));
     }
 
     private void displayPlayLists(String contentName, String country) {
