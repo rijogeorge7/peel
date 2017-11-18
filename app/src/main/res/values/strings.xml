@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">peel</string>
+    <string name="noPlaylistText">(No legal playlist possible )</string>
+    <string-array name="countries">
+        <item>US</item>
+        <item>CA</item>
+        <item>UK</item>
+    </string-array>
+    <string-array name="content_names">
+        <item>MI3</item>
+    </string-array>
+</resources>
